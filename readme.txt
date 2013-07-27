@@ -8,17 +8,19 @@ Stable tag: 1.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Hides a download from appearing in the custom post type archive or when using the [downloads] shortcode
+Hides a download from appearing on the custom post type archive page or when using the [downloads] shortcode
 
 == Description ==
 
-Allows you to hide a download so it does not appear on the custom post type archive page or anywhere where the [downloads] shortcode is being used. Useful for when you want to show the download by itself somewhere and don't want it appearing in the main loops.
+Allows you to hide a download so it does not appear on the custom post type archive page or anywhere where the [downloads] shortcode is being used. Useful for when you want to show the download by itself and don't want it appearing in the main download loops.
 
 **Looking for a free theme for Easy Digital Downloads?**
 
-[http://sumobi.com/shop/shop-front/](http://sumobi.com/shop/shop-front/ "Shop Front")
+[http://wordpress.org/themes/shop-front/](http://wordpress.org/themes/shop-front/ "Shop Front")
 
 Shop Front was designed to be simple, responsive and lightweight. It has only the bare essentials, making it the perfect starting point for your next digital e-commerce store. It’s also easily extensible with a growing collection of add-ons to enhance the functionality and styling.
+
+Shop Front is a simple, responsive & easily extensible theme for the Easy Digital Downloads plugin. It also functions perfectly without the plugin as a standard WordPress blog. A free child theme for modifications can be downloaded from [http://sumobi.com/shop/shop-front-child-theme](http://sumobi.com/shop/shop-front-child-theme "Shop Front Child Theme") as well as other free and paid add-ons to enhance the functionality and styling.
 
 **Stay up to date**
 
@@ -37,7 +39,7 @@ Shop Front was designed to be simple, responsive and lightweight. It has only th
 
 OR you can just install it with WordPress by going to Plugins >> Add New >> and type this plugin's name
 
-Tick the "Hide Download" checkbox in the download configuration metabox and save
+Tick the "Hide Download" checkbox in Easy Digital Download's Download Configuration metabox and save.
 
 == Changelog ==
 
