@@ -1,0 +1,116 @@
+<?php
+/*
+Plugin Name: Easy Digital Downloads - Hide Download
+Plugin URI: http://sumobi.com/shop/hide-download/
+Description: Allows you to hide a download so it does not appear in the download list. Useful for when you want to show the download by itself somewhere and don't want it appearing in the main loops
+Version: 1.0
+Author: Andrew Munro, Sumobi
+Author URI: http://sumobi.com/
+License: GPL-2.0+
+License URI: http://www.opensource.org/licenses/gpl-license.php
+*/
+
+// Plugin constants
+if ( !defined( 'EDD_HD_VERSION' ) )
+	define( 'EDD_HD_VERSION', '1.0' );
+
+
+/**
+ * Internationalization
+ *
+ * @since 1.0
+ */
+function edd_hd_textdomain() {
+	load_plugin_textdomain( 'edd-hd', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
+}
+add_action( 'init', 'edd_hd_textdomain' );
+
+
+/**
+ * Add Metabox
+ *
+ * @since 1.0
+*/
+function edd_hd_render_option( $post_id ) {
+	$checked = (boolean) get_post_meta( $post_id, '_edd_hide_download', true );
+?>
+	<p>
+		<label for="edd_hide_download">
+			<input type="checkbox" name="_edd_hide_download" id="edd_hide_download" value="1" <?php checked( true, $checked ); ?> />
+			<?php printf( __( 'Hide %s', 'edd-hd' ),  edd_get_label_singular() ); ?>
+		</label>
+	</p>
+	
+<?php
+}
+add_action( 'edd_meta_box_fields', 'edd_hd_render_option', 10 );
+
+
+/**
+ * Add to save function
+ *
+ * @since 1.0
+*/
+function edd_hd_metabox_fields_save( $fields ) {
+
+	$fields[] = '_edd_hide_download';
+
+	return $fields;
+}
+add_action( 'edd_metabox_fields_save', 'edd_hd_metabox_fields_save' );
+
+/**
+ * Get array hidden downloads
+ *
+ * @since 1.0
+*/
+function edd_hd_get_hidden_downloads() {
+
+	$args = array(
+		'post_type' => 'download',
+		'meta_key' => '_edd_hide_download',
+	);
+
+	$downloads = get_posts( $args );
+
+	$hidden_downloads = array();
+
+	foreach ($downloads as $download) {
+		$hidden_downloads[] = $download->ID;
+	}
+
+	return $hidden_downloads;
+
+}
+
+/**
+ * Hook into shortcode query and modify
+ *
+ * @since 1.0
+*/
+function edd_hd_shortcode_query( $query ) {
+	$query['post__not_in'] = edd_hd_get_hidden_downloads();
+
+	return $query;
+}
+add_filter( 'edd_downloads_query', 'edd_hd_shortcode_query' );
+
+
+
+/**
+ * Alter the main loop to hide download using pre_get_posts
+ * @since 1.0
+ */
+function edd_hd_pre_get_posts( $query ) {
+
+	// bail if in the admin or we're not working with the main WP query
+	if ( is_admin() || ! $query->is_main_query() )
+		return;
+
+	// modify the query to hide the following downloads IDs
+	if( is_post_type_archive( 'download' ) ) {
+		$query->set( 'post__not_in', edd_hd_get_hidden_downloads() ); 
+	}
+
+}
+add_action( 'pre_get_posts', 'edd_hd_pre_get_posts', 1 );
