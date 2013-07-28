@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Easy Digital Downloads - Hide Download\n"
-"POT-Creation-Date: 2013-07-27 15:49+1200\n"
-"PO-Revision-Date: 2013-07-27 15:49+1200\n"
+"POT-Creation-Date: 2013-07-28 16:52+1200\n"
+"PO-Revision-Date: 2013-07-28 16:52+1200\n"
 "Last-Translator: \n"
 "Language-Team: Sumobi <andrew@sumobi.com>\n"
 "MIME-Version: 1.0\n"
@@ -13,7 +13,7 @@ msgstr ""
 "X-Poedit-Basepath: .\n"
 "X-Poedit-SearchPath-0: ..\n"
 
-#: ../edd-hide-download.php:40
+#: ../edd-hide-download.php:56
 #, php-format
 msgid "Hide %s"
 msgstr ""
