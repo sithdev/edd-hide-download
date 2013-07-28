@@ -15,12 +15,25 @@ if ( !class_exists( 'EDD_Hide_Download' ) ) {
 
 	class EDD_Hide_Download {
 
+		/**
+		 * Keep the hidden downloads in options
+		 *
+		 * @since  1.0.0
+		 * @var    array
+		 */
+		private $hidden_downloads;
+
 		function __construct() {
 			add_action( 'init', array( $this, 'textdomain' ) );
 			add_action( 'edd_meta_box_fields', array( $this, 'add_metabox' ), 10 );
 			add_action( 'edd_metabox_fields_save', array( $this, 'save_metabox' ) );
 			add_action( 'pre_get_posts',  array( $this, 'pre_get_posts' ) );
 			add_filter( 'edd_downloads_query', array( $this, 'shortcode_query' ) );
+
+			// find all hidden products on metabox render
+			add_action( 'edd_meta_box_fields', array( $this, 'query_hidden_downloads' ), 90 );
+			// load the hidden downloads
+			$this->hidden_downloads = get_option( 'edd_hd_ids', array() );
 		}
 
 		/**
@@ -67,16 +80,16 @@ if ( !class_exists( 'EDD_Hide_Download' ) ) {
 		*/
 		function save_metabox( $fields ) {
 			$fields[] = '_edd_hide_download';
+
 			return $fields;
 		}
-		
+
 
 		/**
-		 * Get array hidden downloads
-		 *
-		 * @since 1.0
-		*/
-		function get_hidden_downloads() {
+		 * Store the hidden products ids in the options table
+		 */
+		function query_hidden_downloads() {
+			
 			$args = array(
 				'post_type' => 'download',
 				'meta_key' => '_edd_hide_download',
@@ -89,8 +102,19 @@ if ( !class_exists( 'EDD_Hide_Download' ) ) {
 			foreach ($downloads as $download) {
 				$hidden_downloads[] = $download->ID;
 			}
+			update_option( 'edd_hd_ids', $hidden_downloads );
 
-			return $hidden_downloads;
+		}
+		
+
+		/**
+		 * Get array hidden downloads
+		 *
+		 * @since 1.0
+		*/
+		function get_hidden_downloads() {			
+
+			return $this->hidden_downloads;
 		}
 
 		/**
