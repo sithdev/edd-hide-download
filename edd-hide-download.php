@@ -32,6 +32,8 @@ if ( !class_exists( 'EDD_Hide_Download' ) ) {
 
 			// find all hidden products on metabox render
 			add_action( 'edd_meta_box_fields', array( $this, 'query_hidden_downloads' ), 90 );
+			// redirect if product is set to be hidden
+			add_action( 'wp_head', array( $this, 'redirect_hidden' ) );
 			// load the hidden downloads
 			$this->hidden_downloads = get_option( 'edd_hd_ids', array() );
 		}
@@ -62,6 +64,7 @@ if ( !class_exists( 'EDD_Hide_Download' ) ) {
 		*/
 		function add_metabox( $post_id ) {
 			$checked = (boolean) get_post_meta( $post_id, '_edd_hide_download', true );
+			$is_redirect = (boolean) get_post_meta( $post_id, '_edd_hide_redirect_download', true );
 		?>
 			<p>
 				<label for="edd_hide_download">
@@ -70,6 +73,13 @@ if ( !class_exists( 'EDD_Hide_Download' ) ) {
 				</label>
 			</p>
 			
+			<p>
+				<label for="edd_hide_redirect_download">
+					<input type="checkbox" name="_edd_hide_redirect_download" id="edd_hide_redirect_download" value="1" <?php checked( true, $is_redirect ); ?> />
+					<?php printf( __( 'Disable direct access to %s', 'edd-hd' ), edd_get_label_singular() ); ?>
+				</label>
+			</p>
+
 		<?php
 		}
 
@@ -80,6 +90,7 @@ if ( !class_exists( 'EDD_Hide_Download' ) ) {
 		*/
 		function save_metabox( $fields ) {
 			$fields[] = '_edd_hide_download';
+			$fields[] = '_edd_hide_redirect_download';
 
 			return $fields;
 		}
@@ -143,6 +154,32 @@ if ( !class_exists( 'EDD_Hide_Download' ) ) {
 				$query->set( 'post__not_in', $this->get_hidden_downloads() ); 
 			}
 
+		}
+
+		/**
+		 * Redirect if product needs to be hidden
+		 * 
+		 */
+		function redirect_hidden() {
+			global $post;
+
+			if ( ! in_array( $post->ID, $this->hidden_downloads ) )
+				return;
+
+			$is_redirect_active = (boolean) get_post_meta( $post->ID, '_edd_hide_redirect_download', true );
+
+			if ( $is_redirect_active ) {
+
+				$redirect_url = site_url();
+
+				if ( isset( $_REQUEST['HTTP_REFERER '] ) ) {
+					$referer = esc_url( $_REQUEST['HTTP_REFERER '] );
+					if ( strpos( $referer, $redirect_url ) !== false )
+						$redirect_url = $referer;
+				}
+
+				wp_redirect( $redirect_url, 301 );
+			}
 		}
 	}
 }
