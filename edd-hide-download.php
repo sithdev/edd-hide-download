@@ -33,7 +33,7 @@ if ( !class_exists( 'EDD_Hide_Download' ) ) {
 			// find all hidden products on metabox render
 			add_action( 'edd_meta_box_fields', array( $this, 'query_hidden_downloads' ), 90 );
 			// redirect if product is set to be hidden
-			add_action( 'wp_head', array( $this, 'redirect_hidden' ) );
+			add_action( 'template_redirect', array( $this, 'redirect_hidden' ) );
 			// load the hidden downloads
 			$this->hidden_downloads = get_option( 'edd_hd_ids', array() );
 		}
